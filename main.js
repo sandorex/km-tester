@@ -25,15 +25,14 @@ function the_thing(keycode, map, fn, ...args) {
     if (map[keycode] !== undefined) {
         var delay = Math.abs(Date.now() - map[keycode]);
 
-        if (delay > min_delay) {
+        if (delay >= min_delay) {
             map[keycode] = Date.now();
             return;
         }
 
         fn(delay, ...args);
-    } else {
+    } else
         map[keycode] = Date.now();
-    }
 }
 
 function tell(msg) {
@@ -52,10 +51,10 @@ function clear_log() {
 
 function set_delay(btn) {
     var raw = prompt("Enter the minimum delay in milliseconds (default is " + DEFAULT_MIN_DELAY + ")", min_delay);
-    if (raw === null) {
-        // the user cancelled
+
+    // the user cancelled
+    if (raw === null)
         return;
-    }
 
     var num = parseInt(raw);
     if (isNaN(num)) {
@@ -68,7 +67,10 @@ function set_delay(btn) {
 }
 
 
-document.addEventListener('keypress', event => {
+document.addEventListener('keyup', event => {
+    if (event.repeat)
+        return;
+
     the_thing(event.keyCode, kkeys, (delay, event) => {
         tell("doublepress of key \"" + event.key + "\" with delay of " + delay)
     }, event);
